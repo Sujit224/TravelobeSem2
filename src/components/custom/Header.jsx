@@ -34,16 +34,16 @@ function Header() {
     // </div>
 
     <div className="flex w-[100%] justify-between items-center h-20 px-4   text-black bg-white shadow-sm">
-      <div>
+      <div >
         {/* <h2 onClick={handleNav} className={logo ? "hidden" : "block"}>
           Travelobe
         </h2> */}
-        <img src="TravelobeLogo.png" alt="Logo" className="w-45 h-12"/>
+        <img src="TravelobeLogo.png" alt="Logo" className="h-14 w-auto object-contain mr-4"/>
       </div>
       <ul className="hidden md:flex ">
         <li className="hover:text-green-600 p-4 flex items-center">
           <IoHomeOutline />
-          <a href="" className="px-2">
+          <a href="./" className="px-2">
             Home
           </a>
         </li>
