@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "@/components/ui/input";
-import { AI_PROMPT, SelectBudgetOptions, SelectTravelsList } from "@/constants/options";
+import {
+  AI_PROMPT,
+  SelectBudgetOptions,
+  SelectTravelsList,
+} from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { chatSession } from "@/service/AIModal";
-import {FcGoogle} from "react-icons/fc";
+import { FcGoogle } from "react-icons/fc";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig";
 
 import {
   Dialog,
@@ -14,11 +22,15 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
-   const [openDialog,setOpenDialog] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -31,21 +43,20 @@ function CreateTrip() {
     console.log(formData);
   }, [formData]);
 
-const login = useGoogleLogin({
-  onSuccess: (codeResp) => {
-    console.log('OAuth Success:', codeResp);
-    
-    GetUserProfile(codeResp.access_token);
-  },
-  onError: (error) => console.log('OAuth Error:', error)
-});
+  const login = useGoogleLogin({
+    onSuccess: (codeResp) => {
+      console.log("OAuth Success:", codeResp);
 
+      GetUserProfile(codeResp.access_token);
+    },
+    onError: (error) => console.log("OAuth Error:", error),
+  });
 
   const onGenerateTrip = async () => {
-    
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
 
-    if(!user){ //If  user not found make the openDialog show so that it asks for SignIn
+    if (!user) {
+      //If  user not found make the openDialog show so that it asks for SignIn
       setOpenDialog(true);
       return;
     }
@@ -58,8 +69,12 @@ const login = useGoogleLogin({
       toast("Please fill all the details");
       return;
     }
-    
-    const FINAL_PROMPT = AI_PROMPT.replace("{location}", formData?.location?.label)
+
+    setLoading(true);
+    const FINAL_PROMPT = AI_PROMPT.replace(
+      "{location}",
+      formData?.location?.label
+    )
       .replace("{totalDays}", formData?.noOfDays)
       .replace("{traveller}", formData?.traveller)
       .replace("{budget}", formData?.budget)
@@ -69,35 +84,52 @@ const login = useGoogleLogin({
     const result = await chatSession.sendMessage(FINAL_PROMPT);
 
     console.log("--", result?.response?.text());
-    
-    
+    setLoading(false);
+    SaveAITrip(result?.response?.text());
+  };
+
+  const SaveAITrip = async (TripData) => {
+    setLoading(true);
+    const user = JSON.parse(localStorage.getItem("user"))
+    const docId = Date.now().toString();
+
+    await setDoc(doc(db, "AITrips", docId), {
+      userSelection: formData,
+      tripData: typeof TripData === "string" ? JSON.parse(TripData) : TripData,
+      userEmail: user?.email,
+      id: docId,
+    });
+
+    setLoading(false);
+    navigate('/view-trip/'+docId)
   };
 
   const GetUserProfile = async (access_token) => {
     try {
-        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch user info');
+      const response = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
         }
+      );
 
-        const userData = await response.json();
-        console.log('User Info:', userData);
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(userData));
-        setOpenDialog(false);
-        onGenerateTrip();
-        
+      if (!response.ok) {
+        throw new Error("Failed to fetch user info");
+      }
+
+      const userData = await response.json();
+      console.log("User Info:", userData);
+      // Store user data in localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      setOpenDialog(false);
+      onGenerateTrip();
     } catch (error) {
-        console.error('Error fetching user info:', error);
+      console.error("Error fetching user info:", error);
     }
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#e0e7ff] dark:from-[#18181b] dark:to-[#27272a] transition-colors duration-300 py-12 px-4 md:px-0">
@@ -123,7 +155,6 @@ const login = useGoogleLogin({
               },
             }}
           />
-
         </div>
 
         <div className="mb-6">
@@ -190,16 +221,20 @@ const login = useGoogleLogin({
 
         <div className="flex justify-center">
           <Button
+            disabled={loading}
             className="w-fit px-8 py-3 rounded-lg font-bold bg-gradient-to-r from-[#38ef7d] to-[#11998e] text-white shadow-lg hover:from-[#11998e] hover:to-[#38ef7d] transition-all duration-200"
             onClick={onGenerateTrip}
-            
           >
-            Generate Trip
+            {loading ? (
+              <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
+            ) : (
+              "Generate Trip"
+            )}
           </Button>
         </div>
       </div>
 
-       <Dialog open={openDialog}>
+      <Dialog open={openDialog}>
         <DialogContent className="bg-white p-6 rounded-xl shadow-lg max-w-sm">
           <DialogHeader>
             <DialogDescription>
@@ -208,7 +243,6 @@ const login = useGoogleLogin({
               <p>Sign in to the App with Google authentication securely</p>
 
               <Button
-               
                 onClick={login}
                 varient="outline"
                 className="mt-5 w-full flex gap-2 items-center"
@@ -220,7 +254,6 @@ const login = useGoogleLogin({
           </DialogHeader>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }

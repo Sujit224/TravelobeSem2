@@ -38,7 +38,7 @@ function Header() {
         {/* <h2 onClick={handleNav} className={logo ? "hidden" : "block"}>
           Travelobe
         </h2> */}
-        <img src="TravelobeLogo.png" alt="Logo" className="h-14 w-auto object-contain mr-4"/>
+        <img src="/TravelobeLogo.png" alt="Logo" className="h-14 w-auto object-contain mr-4"/>
       </div>
       <ul className="hidden md:flex ">
         <li className="hover:text-green-600 p-4 flex items-center">

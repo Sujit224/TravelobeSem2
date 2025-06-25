@@ -8,6 +8,7 @@ import CreateTrip from './create-trip'
 import Header from './components/custom/Header'
 import { Toaster } from './components/ui/sonner'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Viewtrip from './view-trip/[tripId]/index.jsx'
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,13 @@ const router = createBrowserRouter([
   {
     path:'/create-trip',
     element: <CreateTrip/>
-  }
+  },
+  {
+    //Dynamic Routes
+    path:'/view-trip/:tripId', //Passing a Random value to the tripId
+    element:<Viewtrip/>
+  },
+
 ])
 createRoot(document.getElementById('root')).render(
   <StrictMode>
