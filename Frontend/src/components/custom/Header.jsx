@@ -16,6 +16,8 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
+import { Link } from 'react-router-dom';
+
 
 function Header() {
   const [nav, setNav] = useState(false);
@@ -46,12 +48,17 @@ function Header() {
           <a href="./" className="px-2">
             Home
           </a>
+
         </li>
         <li className="hover:text-green-600 p-4 flex items-center">
           <IoMdGlobe />
-          <a href="" className="px-2">
+          {/* <a href="" className="px-2">
             RateUs
-          </a>
+          </a> */}
+          <Link to="/rateus">
+            <button className="btn">Rate Us</button>
+          </Link>
+
         </li>
         <li className="hover:text-green-600 p-4 flex items-center">
           <FaRegCircleQuestion />

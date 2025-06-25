@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Button } from "@/components/ui/button"
 import Hero from './components/custom/Hero'
+import Header from './components/custom/Header'
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
   return (
     <>
       {/* Hero */}
-      <Hero/>
+       <Header />
+    <Hero/>      
     </>
   )
 }
