@@ -10,6 +10,7 @@ import { Toaster } from './components/ui/sonner'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Viewtrip from './view-trip/[tripId]/index.jsx'
 import Footer from './components/custom/Footer'
+import MyTrips from './my-trips'
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,10 @@ const router = createBrowserRouter([
     path:'/view-trip/:tripId', //Passing a Random value to the tripId
     element:<Viewtrip/>
   },
-
+  {
+    path:'/my-trips',
+    element:<MyTrips/>
+  }
 ])
 createRoot(document.getElementById('root')).render(
   <StrictMode>
