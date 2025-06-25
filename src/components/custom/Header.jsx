@@ -61,8 +61,14 @@ function Header() {
         </li>
         <li className="hover:text-green-600 p-4 flex items-center">
           <IoChatboxOutline />
-          <a href="" className="px-2">
-            Chat
+          <a
+              href="http://localhost:3001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+              Chat
           </a>
         </li>
       </ul>
@@ -112,7 +118,16 @@ function Header() {
             <a href="">About</a>
           </li>
           <li className="border-b p-4 flex items-center ">
-            <a href="">Chat</a>
+            <a
+             href="http://localhost:3001"
+             target="_blank"
+             rel="noopener noreferrer"
+             style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+             Chat
+              </a>
+
+
           </li>
           <div className=" flex flex-col ">
             <button className="my-2 bg-black p-3 border  text-white rounded-md cursor-pointer">Log In</button>
