@@ -50,7 +50,7 @@ function Header() {
         <li className="hover:text-green-600 p-4 flex items-center">
           <IoMdGlobe />
           <a href="" className="px-2">
-            Destination
+            RateUs
           </a>
         </li>
         <li className="hover:text-green-600 p-4 flex items-center">
