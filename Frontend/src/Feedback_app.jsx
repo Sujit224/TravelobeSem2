@@ -12,7 +12,7 @@ function Feedback_app() {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div className="app">
       <ReviewForm onReviewAdded={() => setRefreshKey((k) => k + 1)} />
         <Link to="/rateus/reviews" className="link-button">View All Reviews →</Link>
