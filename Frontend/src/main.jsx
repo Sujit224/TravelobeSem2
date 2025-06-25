@@ -61,7 +61,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Viewtrip from './view-trip/[tripId]/index.jsx'
 import Feedback_app from './Feedback_app'
 import ReviewsPage from './pages/ReviewsPage'
-
 import {
   BrowserRouter,
   Routes,
